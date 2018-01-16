@@ -14,7 +14,7 @@ var products = [
   {
     id: 2,
     price: 3,
-    name: 'bar' 
+    name: 'bar'
   },
   {
     id: 3,
@@ -46,25 +46,51 @@ var lineItems = [
 //keys are the ids of products
 //the values are the products themselves
 function generateProductsMap(products){
-  //TODO
+  var productMapObj = {}
+
+  for(var i = 0;i < products.length;i++){
+    productMapObj[products[i].id] =  {
+      id: products[i].id,
+      name: products[i].name,
+      price: products[i].price
+    }
+  }
+
+  return productMapObj
 }
+
 
 //returns an object
 //keys are the ids of products
 //value is the total revenue for that product
 function salesByProduct(products, lineItems){
-  //TODO
+
+  productsObj = generateProductsMap(products)
+  return lineItems.reduce(function (accObj,curr){
+    if(accObj.hasOwnProperty(curr.productId)){
+      accObj[curr.productId] = (curr.quantity * productsObj[curr.productId].price) + accObj[curr.productId]
+    } else {
+      accObj[curr.productId] = (curr.quantity * productsObj[curr.productId].price)
+    }
+    return accObj
+  },{})
+
 }
 
 //return the total revenue for all products
 function totalSales(products, lineItems){
-  //TODO
-
+  var salesByProductObj = salesByProduct(products,lineItems)
+  return Object.keys(salesByProductObj).reduce(function(total,key){
+    return total + salesByProductObj[key]
+  },0)
 }
 
 //return the product responsible for the most revenue
 function topSellerByRevenue(products, lineItems){
-  //TODO
+  var salesByProductObj = salesByProduct(products,lineItems)
+  return Object.keys(salesByProductObj).reduce(function(a, b) {
+    return salesByProductObj[a] > salesByProductObj[b] ? a : b
+  })
 }
 console.log(`generates product map - should be
 {
